@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Display</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <style>
+        .container {
+            top: 100px;
+            left: 60px;
+        }
+
+        .container1 {
+            top: 100px;
+            left: 600px;
+        }
+
+        .container, .container1 {
+            border: solid white 1px;
+            border-radius: 10px;
+            width: 350px;
+            height: 200px;
+            position: absolute;
+            text-align: center;
+        }
+
+        label {
+            color: white;
+            font-size: 20px;
+            padding: 10px;
+            position: absolute;
+            top: 30px;
+            left: 100px;
+            border-radius: 10px;
+        }
+
+        .label1 {
+            position: absolute;
+            top: 30px;
+            left: 115px;
+        }
+
+        body {
+            background-color: darkblue;
+        }
+
+        /* Styling for display dot */
+        .dot {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: absolute;
+            top: 100px;
+            left: 150px;
+        }
+
+        /* Initial colors */
+        #gymDot {
+            background-color: green;
+        }
+
+        #libDot {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+
+<!-- GYMNASIUM SECTION -->
+<div class="container">
+    <label>GYMNASIUM</label>
+    <div id="gymDot" class="dot"></div>
+</div>
+
+<!-- LIBRARY SECTION -->
+<div class="container1">
+    <label class="label1">LIBRARY</label>
+    <div id="libDot" class="dot"></div>
+</div>
+
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBCXOSkOspLYuNgi9SVHaqjpywIJsgJJ68",
+        authDomain: "fand-c2b53.firebaseapp.com",
+        databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+        projectId: "fand-c2b53",
+        storageBucket: "fand-c2b53.appspot.com",
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Function to update the display dot with color
+    function updateDot(dotId, status) {
+        const dotElement = document.getElementById(dotId);
+
+        // Change background color based on status
+        if (status === "Fire") {
+            dotElement.style.backgroundColor = "red";
+        } else if (status === "Human") {
+            dotElement.style.backgroundColor = "blue";
+        } else if (status === "All Safe") {
+            dotElement.style.backgroundColor = "green";
+        }
+    }
+
+    // Monitor Firebase data for Gymnasium
+    database.ref("Emergency/Gymnasium/2-set").on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.Status) {
+            updateDot("gymDot", data.Status);
+        } else {
+            updateDot("gymDot", "All Safe"); // Default state if no data
+        }
+    });
+
+    // Monitor Firebase data for Library
+    database.ref("Emergency/Library/3-set").on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.Status) {
+            updateDot("libDot", data.Status);
+        } else {
+            updateDot("libDot", "All Safe"); // Default state if no data
+        }
+    });
+</script>
+
+</body>
+</html>

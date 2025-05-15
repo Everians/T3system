@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="login.css">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCXOSkOspLYuNgi9SVHaqjpywIJsgJJ68",
+            authDomain: "fand-c2b53.firebaseapp.com",
+            databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+            projectId: "fand-c2b53",
+            storageBucket: "fand-c2b53.appspot.com",
+            messagingSenderId: "21223514589",
+            appId: "1:21223514589:web:bbf9b9ed99be4d5eb11634",
+            measurementId: "G-JY2C15Q1HM"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Check if the user is already logged in
+        window.addEventListener("DOMContentLoaded", () => {
+            const isLoggedIn = localStorage.getItem("loggedIn");
+            if (isLoggedIn) {
+                window.location.href = "Homepage.html";
+            }
+        });
+
+        const loginForm = document.getElementById("loginForm");
+        if (loginForm) {
+            loginForm.addEventListener("submit", handleLogin);
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById("username").value.trim();
+            const passwordInput = document.getElementById("password").value.trim();
+
+            if (!emailInput || !passwordInput) {
+                alert("Please fill in both fields.");
+                return;
+            }
+
+
+            try {
+                // Query Firestore for the user
+                const usersCollection = collection(db, "User"); // Replace "User" with your collection name
+                const q = query(usersCollection, where("email", "==", emailInput), where("password", "==", passwordInput));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    // User exists and credentials are valid
+                    alert("Login successful!");
+
+                    // Store session in localStorage
+                    localStorage.setItem("loggedIn", "true");
+
+                    // Redirect to homepage
+                    window.location.href = "Homepage.html";
+                } else {
+                    // Invalid credentials
+                    alert("Invalid email or password.");
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="login-form">
+        <h1>Welcome Admin</h1>
+        <div class="container">
+            <div class="main">
+                <div class="content">
+                    <h2>Log In</h2>
+                    <form id="loginForm">
+                        <input type="email" id="username" placeholder="Email" required>
+                        <input type="password" id="password" placeholder="Enter password" required>
+                        <button class="btn" type="submit">Login</button>
+                    </form>
+                </div>
+                <div class="form-img">
+                    <img src="bg.png" alt="Background Image">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

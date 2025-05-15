@@ -1,0 +1,320 @@
+<!-- 
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js" crossorigin="anonymous"></script>
+   
+    <style>
+        .display {
+            position: absolute;
+            top: 15%;
+            left: 47%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ffffff;
+            padding: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 100%;
+        }
+
+        .display p {
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #status {
+            font-size: 30px;
+            color: white;
+        }
+
+        .status-emergency {
+            color: red;
+        }
+
+        .status-safe {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="display">
+        <p id="status">Status: </p>
+        <audio id="alarm" src="alarm.mp3" preload="auto"></audio>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "fand-c2b53.firebaseapp.com",
+            projectId: "fand-c2b53",
+            databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+            storageBucket: "fand-c2b53.firebasestorage.app",
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Element references
+        const statusElement = document.getElementById("status");
+        const alarm = document.getElementById("alarm");
+
+        // Track if alarm is playing
+        let isAlarmPlaying = false;
+
+        // Paths to monitor
+        const paths = [
+            "Emergency/1-set",
+            "Emergency/Gymnasium/2-set",
+            "Emergency/Library/3-set"
+        ];
+
+        // Check all statuses and update UI
+        function checkStatuses() {
+            let emergency = false;
+
+            const promises = paths.map(path =>
+                database.ref(path).once("value").then(snapshot => {
+                    const status = snapshot.val()?.Status || "All Safe";
+                    if (status === "Fire" || status === "Human") {
+                        emergency = true;
+                    }
+                })
+            );
+
+            Promise.all(promises).then(() => {
+                if (emergency) {
+                    statusElement.textContent = "Status: Emergency";
+                    statusElement.className = "status-emergency";
+                    playAlarm();
+                } else {
+                    statusElement.textContent = "Status: All Safe";
+                    statusElement.className = "status-safe";
+                    stopAlarm();
+                }
+            });
+        }
+
+        // Play alarm sound
+        function playAlarm() {
+            if (!isAlarmPlaying) {
+                alarm.play();
+                isAlarmPlaying = true;
+
+                // Stop alarm when it ends
+                alarm.onended = () => {
+                    isAlarmPlaying = false;
+                };
+            }
+        }
+
+        // Stop alarm sound
+        function stopAlarm() {
+            if (isAlarmPlaying) {
+                alarm.pause();
+                alarm.currentTime = 0;
+                isAlarmPlaying = false;
+            }
+        }
+
+        // Monitor Firebase changes
+        paths.forEach(path => {
+            database.ref(path).on("value", () => {
+                checkStatuses();
+            });
+        });
+
+        // Initial status check
+        checkStatuses();
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Status</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js" crossorigin="anonymous"></script>
+   
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .display {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 1000;
+            width: 80%;
+            max-width: 500px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .display p {
+            font-size: 35px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        #status {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .status-emergency {
+            color: #e74c3c;
+            animation: pulseRed 1.5s infinite alternate;
+        }
+
+        .status-safe {
+            color: #2ecc71;
+            animation: pulseGreen 1.5s infinite alternate;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseRed {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes pulseGreen {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        audio {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="display">
+        <p id="status">Status: </p>
+        <audio id="alarm" src="alarm.mp3" preload="auto"></audio>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "fand-c2b53.firebaseapp.com",
+            projectId: "fand-c2b53",
+            databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+            storageBucket: "fand-c2b53.firebasestorage.app",
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Element references
+        const statusElement = document.getElementById("status");
+        const alarm = document.getElementById("alarm");
+
+        // Track if alarm is playing
+        let isAlarmPlaying = false;
+
+        // Paths to monitor
+        const paths = [
+            "Emergency/1-set",
+            "Emergency/Gymnasium/2-set",
+            "Emergency/Library/3-set"
+        ];
+
+        // Check all statuses and update UI
+        function checkStatuses() {
+            let emergency = false;
+
+            const promises = paths.map(path =>
+                database.ref(path).once("value").then(snapshot => {
+                    const status = snapshot.val()?.Status || "All Safe";
+                    if (status === "Fire" || status === "Human") {
+                        emergency = true;
+                    }
+                })
+            );
+
+            Promise.all(promises).then(() => {
+                if (emergency) {
+                    statusElement.textContent = "Status: Emergency";
+                    statusElement.className = "status-emergency";
+                    playAlarm();
+                } else {
+                    statusElement.textContent = "Status: All Safe";
+                    statusElement.className = "status-safe";
+                    stopAlarm();
+                }
+            });
+        }
+
+        // Play alarm sound
+        function playAlarm() {
+            if (!isAlarmPlaying) {
+                alarm.play();
+                isAlarmPlaying = true;
+
+                // Stop alarm when it ends
+                alarm.onended = () => {
+                    isAlarmPlaying = false;
+                };
+            }
+        }
+
+        // Stop alarm sound
+        function stopAlarm() {
+            if (isAlarmPlaying) {
+                alarm.pause();
+                alarm.currentTime = 0;
+                isAlarmPlaying = false;
+            }
+        }
+
+        // Monitor Firebase changes
+        paths.forEach(path => {
+            database.ref(path).on("value", () => {
+                checkStatuses();
+            });
+        });
+
+        // Initial status check
+        checkStatuses();
+    </script>
+</body>
+</html>

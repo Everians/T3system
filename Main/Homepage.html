@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U-ALERT Monitoring System</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="repor.css">
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+    <style>
+   .con, .con1,.con2{
+    position: absolute;
+
+   }
+   .con{
+    bottom: 140px;
+    left: 0px;
+    
+   }
+   .con1
+   {
+    bottom: 150px;
+    right: 575px;
+   }
+.con2
+{
+    bottom:148px;
+    right: 730px;
+}
+
+   
+        .dot,.dot1,.dot2 { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%;
+            position: absolute; 
+            left: 150px;
+            border: solid white 2px;
+            width: 30px; 
+            height: 30px;
+         }
+
+
+        #gymDot, #libDot,#adminDot { 
+            background-color: green; 
+        }
+        .display {
+  position: absolute;
+  top: 11%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  border: 1px solid #ffffff;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  border-radius: 10px;
+  color: white; /* White text color for contrast */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 80%;
+  
+}
+
+.display p {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Specific styling for individual elements */
+#name {
+  color: #ffcc00; /* Gold color for emphasis */
+}
+    
+
+#status {
+    font-size: 45px;
+    text-shadow: 0 2px 4px black;
+
+}
+        .status-emergency {
+            color: red; /* Red for Emergency status */
+            font-weight: bold; /* Bold for emphasis */
+        }
+
+        .status-safe {
+            color: green; /* Green for Safe status */
+        }
+    
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .display {
+    padding: 15px;
+    font-size: 16px;
+  }
+  
+  #name, #status{
+    margin: 5px 0;
+  }
+}
+
+
+/* Legend Info Box Styles */
+.legend-info-box {
+    position: absolute;
+    top: 460px;
+    right: 25px;
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 200px;
+    z-index: 100; /* Make sure it's on top of other content */
+    font-size: 16px;
+    border: 2px solid rgb(160, 160, 160);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+.legend-info-box h3 {
+    font-size: 18px;
+    gap: 60px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #ffcc00;
+    text-align: center;
+}
+.legend-info-box ul {
+    font-size: 14px;
+    font-weight: bold;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.legend-info-box ul li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.legend-info-box ul li span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+/* Colors for the legend boxes */
+.red-box {
+    background-color: red;
+    border: 1px solid #ffffff;
+}
+.blue-box {
+    background-color: rgb(0, 47, 255);
+    border: 1px solid #ffffff;
+}
+.green-box {
+    background-color: green;
+    border: 1px solid #ffffff;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="head">
+                <div class="logo-img">
+                    <img src="T3.png" alt="Logo">
+                </div>
+                <div class="logo-details">
+                    <p class="title">The U-ALert Monitoring System</p>
+                    <p class="name" style=" font-size: 25px">Main Campus</p>
+                </div>
+            </div>
+            <div class="nav">
+                <div class="menu">
+                    <p class="title">Home</p>
+                    <ul>
+                        <li class="active">
+                            <a href="#" id="openadminBtn">
+                                <i class="ph ph-user-circle"></i>
+                                <span class="text">Manage Admin</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="ph ph-graph"></i>
+                                <span class="text">Manage Reports</span>
+                                <i class="arrow ph-bold ph-caret-down"></i>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="#" id="openModalBtn">
+                                        <span class="text">Monthly Report</span> 
+                                    </a>
+                                   </li>
+                                <li>
+                                    <a href="#" id="openYearlyBtn">
+                                        <span class="text">Yearly Report</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" id="openlogBtn">
+                                        <span class="text">Recent Logs</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+    </div>
+            <div class="menu">
+             
+                <ul>
+                    <li>
+                        <a id="logoutButton">
+                            <i class="ph ph-sign-out"></i>
+                            <span class="text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="legend-info-box">
+            <h3>Legend</h3>
+            <ul>
+                <!-- <li><span class="red-box"></span>Stop</li> -->
+                <li><span class="red-box"></span> Fire</li>
+                <li><span class="green-box"></span> All Safe</li>
+                <li><span class="blue-box"></span> Human Emergency</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Fullscreen image section -->
+    <div class="imageC">
+        <!-- Gymnasium and Library Sections -->
+        <div class="con">
+            <!-- <label>GYMNASIUM</label> -->
+            <div id="gymDot" class="dot"></div>
+        </div>
+        <div class="con1">
+            <!-- <label class="label1">LIBRARY</label> -->
+            <div id="libDot" class="dot1"></div>
+        </div>
+        <div class="con2">
+            <!-- <label class="label1">LIBRARY</label> -->
+            <div id="adminDot" class="dot2"></div>
+        </div>
+        <div class="display" >
+
+    <p id="status"> Loading..</p>
+    <audio id="alarm" src="alarm.mp3" preload="auto"></audio>
+    </div>
+ 
+       
+     
+   
+<div id="monthlyOverlay" class="modal1">
+    <div class="modal-content1">
+        <span class="close" id="closeModal1">&times;</span>
+        <iframe src="mo.html" width="100%" height="600px"></iframe> <!-- Correct source -->
+    </div>
+</div>
+
+<!-- Yearly Report Modal -->
+<div id="yearlyOverlay" class="modal2">
+    <div class="modal-content2">
+        <span class="close" id="closeModal2">&times;</span>
+        <iframe src="mo1.html" width="100%" height="400px"></iframe> <!-- Correct source -->
+    </div>
+</div>
+
+<!-- log Report Modal -->
+<div id="logOverlay" class="modal3">
+    <div class="modal-content3">
+        <span class="close" id="closeModal3">&times;</span>
+        <iframe src="log.html" width="100%" height="400px"></iframe> <!-- Correct source -->
+    </div>
+</div>
+
+<!-- admin Report Modal -->
+<div id="adminOverlay" class="modal4">
+    <div class="modal-content4">
+        <span class="close" id="closeModal4">&times;</span>
+        <iframe src="mAdmin.html" width="100%" height="400px"></iframe> <!-- Correct source -->
+    </div>
+</div>
+ 
+
+<!--Script.js -->
+ <script>
+    $(".menu > ul > li").click(function (e) {
+    // Remove active from already clicked
+    $(this).siblings().removeClass("active");
+    // Add active to clicked
+    $(this).toggleClass("active");
+    // If submenu exists, open it
+    $(this).find("ul").slideToggle();
+    // Close other submenus
+    $(this).siblings().find("ul").slideUp();
+    // Remove active class from submenu items
+    $(this).siblings().find("ul").find("li").removeClass("active");
+});
+// JavaScript to handle modal opening and closing
+document.addEventListener("DOMContentLoaded", function() {
+    // Open Monthly Report Modal
+    document.getElementById("openModalBtn").addEventListener("click", function() {
+        document.getElementById("monthlyOverlay").style.display = "block";
+    });
+
+    // Open Yearly Report Modal
+    document.getElementById("openYearlyBtn").addEventListener("click", function() {
+        document.getElementById("yearlyOverlay").style.display = "block";
+    });
+    // Open admin Report Modal
+    document.getElementById("openadminBtn").addEventListener("click", function() {
+        document.getElementById("adminOverlay").style.display = "block";
+    });
+     // Open Log Report Modal
+     document.getElementById("openlogBtn").addEventListener("click", function() {
+        document.getElementById("logOverlay").style.display = "block";
+    });
+
+
+
+    // Close Monthly Report Modal
+    document.getElementById("closeModal1").addEventListener("click", function() {
+        document.getElementById("monthlyOverlay").style.display = "none";
+    });
+
+    // Close Yearly Report Modal
+    document.getElementById("closeModal2").addEventListener("click", function() {
+        document.getElementById("yearlyOverlay").style.display = "none";
+    });
+// Close log Report Modal
+document.getElementById("closeModal3").addEventListener("click", function() {
+        document.getElementById("logOverlay").style.display = "none";
+    });
+// Close admin Report Modal
+document.getElementById("closeModal4").addEventListener("click", function() {
+        document.getElementById("adminOverlay").style.display = "none";
+    });
+
+
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === document.getElementById("monthlyOverlay")) {
+            document.getElementById("monthlyOverlay").style.display = "none";
+        }
+        if (event.target === document.getElementById("yearlyOverlay")) {
+            document.getElementById("yearlyOverlay").style.display = "none";
+        }
+        
+        if (event.target === document.getElementById("adminOverlay")) {
+            document.getElementById("adminOverlay").style.display = "none";
+        }
+        if (event.target === document.getElementById("logOverlay")) {
+            document.getElementById("logOverlay").style.display = "none";
+        };
+    };
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');  // Form element
+    const popmessage = document.getElementById('loginSuccessPopmessage');  // Popmessage element
+
+    // Event listener for form submission
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+        
+        // Simulate a login process (Replace this with real login logic)
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Example validation (replace with real validation):
+        if (username === 'testuser' && password === 'password') {
+            // Display the popmessage on successful login
+            popmessage.style.display = 'flex';  // Show popmessage
+
+            // Hide the popmessage after 2 seconds and redirect to the homepage
+            setTimeout(function() {
+                popmessage.style.display = 'none';  // Hide popmessage
+                window.location.href = "homepage.html";  // Redirect to the homepage
+            }, 2000); // 2000ms = 2 seconds
+        } else {
+            // Show an alert if login credentials are invalid
+            alert('Invalid credentials, please try again.');
+        }
+    });
+});
+ </script>
+
+ <!-- Firebase Configuration and Script -->
+<script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCXOSkOspLYuNgi9SVHaqjpywIJsgJJ68",
+            authDomain: "fand-c2b53.firebaseapp.com",
+            databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+            projectId: "fand-c2b53",
+            storageBucket: "fand-c2b53.appspot.com",
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function updateDot(dotId, status) {
+            const dotElement = document.getElementById(dotId);
+            dotElement.style.backgroundColor = {
+                "Fire": "red",
+                "Human": "blue",
+                "All Safe": "green"
+            }[status] || "green";
+        }
+
+        database.ref("Emergency/Gymnasium/2-set").on("value", (snapshot) => {
+            const data = snapshot.val();
+            updateDot("gymDot", data?.Status || "All Safe");
+        });
+        database.ref("Emergency/1-set").on("value", (snapshot) => {
+            const data = snapshot.val();
+            updateDot("adminDot", data?.Status || "All Safe");
+        });
+
+        database.ref("Emergency/Library/3-set").on("value", (snapshot) => {
+            const data = snapshot.val();
+            updateDot("libDot", data?.Status || "All Safe");
+        });
+
+        /////////////////////////////////////////////////////////////////////////
+        
+      // Element references
+      const statusElement = document.getElementById("status");
+        const alarm = document.getElementById("alarm");
+
+        // Track if alarm is playing
+        let isAlarmPlaying = false;
+
+        // Paths to monitor
+        const paths = [
+            "Emergency/1-set",
+            "Emergency/Gymnasium/2-set",
+            "Emergency/Library/3-set"
+        ];
+
+        // Check all statuses and update UI
+        function checkStatuses() {
+            let emergency = false;
+
+            const promises = paths.map(path =>
+                database.ref(path).once("value").then(snapshot => {
+                    const status = snapshot.val()?.Status || "All Safe";
+                    if (status === "Fire" || status === "Human") {
+                        emergency = true;
+                    }
+                })
+            );
+
+            Promise.all(promises).then(() => {
+                if (emergency) {
+                    statusElement.textContent = "EMERGENCY";
+                    statusElement.className = "status-emergency";
+                    playAlarm();
+                } else {
+                    statusElement.textContent = "All Safe";
+                    statusElement.className = "status-safe";
+                    stopAlarm();
+                }
+            });
+        }
+
+        // Play alarm sound
+        function playAlarm() {
+            if (!isAlarmPlaying) {
+                alarm.play();
+                isAlarmPlaying = true;
+
+                // Stop alarm when it ends
+                alarm.onended = () => {
+                    isAlarmPlaying = false;
+                };
+            }
+        }
+
+        // Stop alarm sound
+        function stopAlarm() {
+            if (isAlarmPlaying) {
+                alarm.pause();
+                alarm.currentTime = 0;
+                isAlarmPlaying = false;
+            }
+        }
+
+        // Monitor Firebase changes
+        paths.forEach(path => {
+            database.ref(path).on("value", () => {
+                checkStatuses();
+            });
+        });
+
+        // Initial status check
+        checkStatuses();
+      
+    // Check if the user is logged in
+    window.addEventListener("DOMContentLoaded", () => {
+        const isLoggedIn = localStorage.getItem("loggedIn");
+
+        if (!isLoggedIn) {
+            // Redirect to login page if the session doesn't exist
+            window.location.href = "login.html"; // Replace with the path to your login page
+        }
+    });
+
+
+    document.getElementById("logoutButton").addEventListener("click", () => {
+        localStorage.removeItem("loggedIn");
+        window.location.href = "login.html"; // Redirect to login page
+        
+    });
+
+
+
+
+
+//////////////////////////////////BLinkinggggggggggggggggggg/////////////////////////////////////////////////
+//////////////////////////////////BLinkinggggggggggggggggggg/////////////////////////////////////////////////
+//////////////////////////////////BLinkinggggggggggggggggggg/////////////////////////////////////////////////
+//////////////////////////////////BLinkinggggggggggggggggggg/////////////////////////////////////////////////
+    const lastTriggered = {
+    Human: null,
+    Fire: null
+};
+
+const blinkingDots = {}; // Store intervals for blinking
+
+function updateDotWithBlinking(dotId, status) {
+    const dotElement = document.getElementById(dotId);
+    
+    if (!dotElement) {
+        console.error(`Element with ID ${dotId} not found.`);
+        return;
+    }
+
+    console.log(`Updating ${dotId} with status: ${status}`);
+
+    // Stop blinking and reset interval when "All Safe"
+    if (status === "All Safe") {
+        if (blinkingDots[dotId]) {
+            console.log(`Stopping blinking for ${dotId}`);
+            clearInterval(blinkingDots[dotId]); // Clear existing blinking interval
+            blinkingDots[dotId] = null; // Reset interval reference
+        }
+        dotElement.style.backgroundColor = "green"; // Set to green
+
+        // Reset lastTriggered timestamps
+        lastTriggered.Human = null;
+        lastTriggered.Fire = null;
+        return;
+    }
+
+    // Record the timestamp for the status
+    if (status in lastTriggered) {
+        lastTriggered[status] = Date.now();
+    } else {
+        console.warn(`Unexpected status: ${status}`);
+        return;
+    }
+
+    // Check if both statuses occurred within 60 seconds
+    if (
+        lastTriggered.Human &&
+        lastTriggered.Fire &&
+        Math.abs(lastTriggered.Human - lastTriggered.Fire) <= 60000
+    ) {
+        console.log(`Triggering blinking for ${dotId}`);
+        // Start or reset blinking effect
+        if (blinkingDots[dotId]) {
+            clearInterval(blinkingDots[dotId]); // Reset any existing interval
+        }
+        blinkingDots[dotId] = setInterval(() => {
+            const currentColor = dotElement.style.backgroundColor;
+            dotElement.style.backgroundColor = currentColor === "red" ? "blue" : "red";
+        }, 500); // Blink every 500ms
+    }
+}
+
+// Update Firebase listeners to handle blinking and resetting
+database.ref("Emergency/Gymnasium/2-set").on("value", (snapshot) => {
+    const data = snapshot.val();
+    console.log("Gymnasium data:", data);
+    updateDotWithBlinking("gymDot", data?.Status || "All Safe");
+});
+database.ref("Emergency/1-set").on("value", (snapshot) => {
+    const data = snapshot.val();
+    console.log("Admin data:", data);
+    updateDotWithBlinking("adminDot", data?.Status || "All Safe");
+});
+database.ref("Emergency/Library/3-set").on("value", (snapshot) => {
+    const data = snapshot.val();
+    console.log("Library data:", data);
+    updateDotWithBlinking("libDot", data?.Status || "All Safe");
+});
+
+
+    </script>
+</body>
+</html>

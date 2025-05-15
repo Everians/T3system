@@ -1,0 +1,338 @@
+/*Report background*/
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background */
+    color: white;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background-color: rgba(0, 0, 0, 0.8); /* Transparent background */
+    color: #fff;
+    margin: 20% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+.modal-content {
+    position: relative; /* Needed for absolute positioning */
+    padding: 20px;
+}
+
+/* ----------------Responsive Pie Chart design--------------- */
+@media (max-width: 800px) {
+    .models-content {
+        width: 70%; /* Adjust modal width for smaller screens */
+    }
+    .form-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
+    .submit-btn {
+        grid-column: span 1; /* Centered submit button */
+    }
+}
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}   
+/* Close button */
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 30px; /* Larger close button */
+    color: #777;
+    cursor: pointer;
+    font-weight: bold;
+}
+.close:hover{
+    color: #ffffff;
+}
+
+/*Admin background Styles*/
+.model {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background */
+    justify-content: center;
+    align-items: center;
+}
+.model-content {
+    background-color: rgba(0, 0, 0, 0.9); /* Transparent background */
+    color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 60%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+.model-content h2 {
+    color: #00ffff;
+    margin-top: 25px;
+    margin-bottom: 5px;
+    font-size: 34px;
+}
+.model-content h3 {
+    color: #00ffff;
+    margin-top: 40px;
+    font-size: 22px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.closed {
+    position: absolute;
+    right: 290px;
+    top: 145px;
+    font-size: 30px; /* Larger close button */
+    color: #777;
+    cursor: pointer;
+    font-weight: bold;
+}
+.closed:hover {
+    color: #ffffff;
+}
+/* Update Form */
+form-groups {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+/*Add Admin Styles*/
+.models {
+    margin-top: 0;
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay for more contrast */
+    justify-content: center;
+    align-items: center;
+    
+}
+.models-content {
+    background-color: rgba(0, 0, 0, 0.9); /* Darker overlay for more contrast */
+    color: #fff9f9;
+    border: white solid 1px;
+    padding: 15px;
+    border-radius: 14px;
+    width: 100%; /* Wider form */
+    max-width: 830px; /* Max width to keep it centered */
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Submit button styling */
+.submit-btn {
+    grid-column: span 2; /* Make the submit button span across the form */
+    padding: 14px; /* Match the padding of input fields */
+    background-color: #2603b1;
+    color: white;
+    border: none;
+    border-radius: 8px; /* Adjusted for consistency with input fields */
+    font-size: 18px; /* Match input fields font size */
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    text-align: center;
+    width: 49%; /* Make button take the full width of the container */
+    margin-top: 10px; /* Space above button */
+}
+/* Aligning the button to the bottom right */
+.submit-btn-container {
+    display: flex;
+    justify-content: flex-end; /* Align to the right */
+    grid-column: span 2; /* Make the container span across the form */
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+.closes {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 30px; /* Larger close button */
+    color: #777;
+    cursor: pointer;
+    font-weight: bold;
+}
+.closes:hover {
+    color: #ffffff;
+}
+/* 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+
+       
+.sidebar{
+    position: fixed;
+    width: 250px;
+    height: 100vh;
+    display: flex;
+    gap: 50px;
+    flex-direction: column;
+    padding: 20px;
+    background: linear-gradient(to bottom right, #252dca, #040722);
+    z-index: 10;
+    /* border: 1px solid rgb(27, 27, 27); */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;  
+    overflow: hidden;
+}
+.sidebar .head{
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Reduced gap for a tighter layout */
+    margin-bottom: 20px; /* Added space between the head and the menu */
+}
+.logo-img{
+    width: 100px;  /* Make sure width and height are the same */
+    height: 65px;
+    border-radius: 70%; /* This will make the image circular */
+    overflow: hidden; /* Ensure that the image stays within the circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.logo-img img{
+    width: 100%;  /* Ensure the image fits within the container */
+    height: 100%;  /* Maintain the aspect ratio */
+    object-fit: cover;  /* Ensure the image fills the circle without distortion */
+}
+.logo-details .title,
+.title {
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+.logo-details .name{
+    font-size: 13px;
+    font-weight: 300;
+    color: #fff;
+}
+.nav{
+    flex: 1;
+}
+.menu ul li{
+    position: relative;
+    list-style: none;
+    margin-bottom: 15px;
+}
+.menu ul li a{
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    gap: 20px;
+    font-weight: 500;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 10px;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+.menu ul li > a:hover,
+.menu ul li.active > a{
+    color: #4e34b6;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+.menu ul li .icon{
+    font-size: 28px;
+    color: #ffcc00;
+}
+.menu ul li .bx{
+    font-size: 22px;
+    color: #ffcc00;
+}
+.menu ul li .text{
+    flex: 1;
+}
+.menu ul li .arrow{
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+.menu ul li.active .arrow{
+    transform: rotate(180deg);
+}
+.menu .sub-menu{
+    display: none;
+    margin-left: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+}
+.menu .sub-menu li a{
+    padding: 10px 8px;
+    font-size: 12px;
+}
+.menu:not(:last-child){
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+@import url(https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900);
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+body{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+.container{
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+    
+       
+.imageC {
+    width: calc(460% - 256px);
+    height: 100vh;
+    flex-grow: 1;
+    display: flex;
+    background: url('dorsu.jpg') no-repeat center center;
+    z-index: 10;
+    background-size: 104% 106%;
+    /* border: 1px solid rgba(255, 255, 255, 0.2); */
+    position: relative;
+}

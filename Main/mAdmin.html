@@ -1,0 +1,293 @@
+<script>
+    // Check if the user is logged in
+    window.addEventListener("DOMContentLoaded", () => {
+        const isLoggedIn = localStorage.getItem("loggedIn");
+
+        if (!isLoggedIn) {
+            // Redirect to login page if the session doesn't exist
+            window.location.href = "login.html"; // Replace with the path to your login page
+        }
+    });
+</script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Admin</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCXOSkOspLYuNgi9SVHaqjpywIJsgJJ68",
+            authDomain: "fand-c2b53.firebaseapp.com",
+            databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+            projectId: "fand-c2b53",
+            storageBucket: "fand-c2b53.appspot.com",
+            messagingSenderId: "21223514589",
+            appId: "1:21223514589:web:bbf9b9ed99be4d5eb11634",
+            measurementId: "G-JY2C15Q1HM"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const addAdminForm = document.getElementById("addAdminForm");
+            const messageElement = document.getElementById("message");
+
+            // Form submission handler
+            addAdminForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                // Get form values
+                const email = document.getElementById("email").value.trim();
+                const password = document.getElementById("password").value.trim();
+                const firstName = document.getElementById("firstName").value.trim();
+                const lastName = document.getElementById("lastName").value.trim();
+                const middleName = document.getElementById("middleName").value.trim();
+                const age = document.getElementById("age").value.trim();
+                const phoneNumber = document.getElementById("phoneNumber").value.trim();
+                const address = document.getElementById("address").value.trim();
+
+                if (!email || !password || !firstName || !lastName || !age || !phoneNumber || !address) {
+                    messageElement.textContent = "All fields are required.";
+                    messageElement.style.color = "red";
+                    return;
+                }
+
+                try {
+                    // Check if email already exists
+                    const usersCollection = collection(db, "User");
+                    const emailQuery = query(usersCollection, where("email", "==", email));
+                    const querySnapshot = await getDocs(emailQuery);
+
+                    if (!querySnapshot.empty) {
+                        // Email already exists
+                        messageElement.textContent = "Email already exists. Please use a different email.";
+                        messageElement.style.color = "red";
+                        return;
+                    }
+
+                    // Add new admin to Firestore
+                    await addDoc(usersCollection, {
+                        firstName,
+                        lastName,
+                        middleName,
+                        age,
+                        phoneNumber,
+                        address,
+                        email,
+                        password // Optionally, hash the password before storing
+                    });
+
+                    messageElement.textContent = "Admin account created successfully!";
+                    messageElement.style.color = "green";
+                    addAdminForm.reset();
+                } catch (error) {
+                    console.error("Error creating user:", error);
+                    messageElement.textContent = `Error: ${error.message}`;
+                    messageElement.style.color = "red";
+                }
+            });
+        });
+    </script>
+    <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: url('LB.jpg') no-repeat center center/cover;
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-position: center; /* Centers the image */
+        margin: 0;
+        /* background: linear-gradient(to bottom right, #252dca, #040722); */
+        color: #fff;
+        display: flex;
+        justify-content: center;    
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .add-admin {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 4px 8px 15px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 600px;
+        height: 91%;
+        /* border: 2px solid rgb(77, 77, 77); */
+    }
+
+    h1 {
+        text-align: center;
+    margin: 10px 0 20px 0;
+    color:rgb(69, 75, 185); /* Highlighted color for better visibility */
+    font-size: 3rem;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 10px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-size: 16px;
+        color:rgb(22, 26, 114); /* Highlighted color for better visibility */
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        margin-bottom: 10px;
+        transition: 0.3s ease;
+    }
+
+    input:focus {
+        border-color: #4e54c8;
+        box-shadow: 0 0 5px rgba(78, 84, 200, 0.5);
+        outline: none;
+    }
+
+    .full-width {
+        flex: 2 2 100%;
+    }
+    button {
+    background: linear-gradient(135deg, #4e54c8, #6b7fe0);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 4px 5px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    width: 100%;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #4e54c8, #252dca);
+    transform: scale(1.04);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(78, 84, 200, 0.6);
+}
+
+button:active {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+    #message {
+        margin-top: 5px;
+        text-align: center;
+        font-weight: bold;
+    }
+    .links-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px; /* Adjust spacing between links */
+    margin-top: 20px;
+}
+
+.custom-link {
+    display: inline-block;
+    padding: 10px 20px; /* Add padding for button-like appearance */
+    border: 2px solid #4e54c8; /* Border for better visibility */
+    border-radius: 15px; /* Rounded corners */
+    background: linear-gradient(to bottom right, #ffffff, #d9d9ff); /* Subtle background gradient */
+    color: #4e54c8; /* Text color */
+    font-size: 1rem; /* Font size */
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: all 0.3s ease;
+}
+
+.custom-link:hover {
+    background: linear-gradient(to top right, #4e54c8, #6c63ff); /* Hover gradient */
+    color: #fff; /* White text on hover */
+    border-color: #6c63ff; /* Change border color on hover */
+    
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+}
+
+
+</style>
+
+<body>
+    <div class="add-admin">
+        <h1>Create Admin</h1>
+        <form id="addAdminForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Enter Email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter Password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" placeholder="Enter First Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" placeholder="Enter Last Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="middleName">Middle Name:</label>
+                <input type="text" id="middleName" placeholder="Enter Middle Name">
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" placeholder="Enter Age" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" id="phoneNumber" pattern="^(09\d{9}|\+639\d{9})$"  placeholder="09XXXXXXXXX or +639XXXXXXXXX" required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="address">Address:</label>
+                <input type="text" id="address" placeholder="Enter Address" required>
+            </div>
+
+            <div class="form-group full-width">
+                <button type="submit">Add Admin</button>
+            </div>
+        </form>
+        <p id="message"></p>
+        <!-- Updated Section -->
+        <div class="links-container">
+          
+            <a href="v.html" class="custom-link">View Admin List</a>
+        </div>
+        
+
+    </div>
+</body>
+

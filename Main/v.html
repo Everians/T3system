@@ -1,0 +1,336 @@
+<script>
+       // Check if the user is logged in
+       window.addEventListener("DOMContentLoaded", () => {
+        const isLoggedIn = localStorage.getItem("loggedIn");
+
+        if (!isLoggedIn) {
+            // Redirect to login page if the session doesn't exist
+            window.location.href = "login.html"; // Replace with the path to your login page
+        }
+    });
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Admins</title>
+    <style>
+        body {
+    font-family: 'Roboto', sans-serif;
+    background: url('LB.jpg') no-repeat center center/cover;
+    background-size: cover; /* Ensures the image covers the entire background */
+    background-position: center; /* Centers the image */
+    margin: 0;
+    padding: 0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color:rgb(0, 9, 173); /* Highlighted color for better visibility */
+    margin-top: 20px;
+    font-size: 3.8rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+a.back-link {
+    display: inline-block;
+    text-align: center;
+    color: #0300a5;
+    text-decoration: none;
+    margin: 20px auto;
+    font-size: 24px;
+    font-weight: 30px;
+    padding: 10px 22px;
+    border: 1.5px solid #020080;
+    border-radius: 8px;
+    transition: color 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: transparent;
+    width: fit-content; /* Ensures the button has a responsive width */
+}
+
+a.back-link:hover {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+    transform: scale(1.1); /* Slightly enlarge the button */
+    box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3); /* Soft green shadow */
+}
+
+a.back-link:active {
+    transform: scale(0.98); /* Shrink effect on click */
+    box-shadow: none;
+}
+
+/* Center the link using flexbox */
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    width: 90%;
+}
+
+.search-bar input {
+    width: 40%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: #5b60c9;
+}
+
+/* Adjusted position of the search icon */
+.search-bar .search-icon {
+    position: absolute;
+    right: 10px; /* Move the icon closer to the input */
+    color: #888;
+    font-size: 20px;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .search-bar input {
+        width: 95%;
+        padding: 10px 15px 10px 40px; /* Adjust padding for smaller screens */
+    }
+
+    .search-bar .search-icon {
+        left: 10px; /* Keep it aligned even on smaller screens */
+    }
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+}
+
+th {
+    background: rgb(5, 18, 158);
+    color: #fff;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: #f1f1f1;
+    transition: background 0.3s ease;
+}
+
+td a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 8px;
+    border-radius: 5px;
+    transition: background 0.3s ease, color 0.3s ease;
+
+}
+
+td a[href*="vEdit"] {
+    background: #28a745;
+ 
+
+}
+
+td a[href*="vDelete"] {
+    background: #dc3545;
+}
+
+td a:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+
+td a[href*="vEdit"]:hover {
+    background: #218838;
+}
+
+td a[href*="vDelete"]:hover {
+    background: #c82333;
+}
+
+.error-message {
+    text-align: center;
+    color: #e74c3c;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+#loading {
+    text-align: center;
+    font-size: 20px;
+    color: #1a6088;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: 90%;
+        white-space: nowrap;
+    }
+
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .search-bar input {
+        width: 95%;
+        padding: 10px 15px 10px 40px;
+    }
+
+    .search-bar .search-icon {
+        left: 10px;
+    }
+
+    a.back-link {
+        font-size: 16px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <h1>View All Admins</h1>
+    <a href="mAdmin.html" class="back-link">Go Back</a>
+    <div class="container">
+        <div class="search-bar">
+        <span class="search-icon">&#128269;</span>
+            <input type="text" id="search-input" placeholder="Search by name, email, or phone number...">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Middle Name</th>
+                    <th>Age</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="user-table-body">
+                <!-- User data will be dynamically populated here -->
+            </tbody>
+        </table>
+        <div id="loading" style="text-align: center; font-size: 18px; color:rgb(0, 2, 145);">Loading...Please Wait!</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCXOSkOspLYuNgi9SVHaqjpywIJsgJJ68",
+            authDomain: "fand-c2b53.firebaseapp.com",
+            databaseURL: "https://fand-c2b53-default-rtdb.firebaseio.com",
+            projectId: "fand-c2b53",
+            storageBucket: "fand-c2b53.appspot.com",
+            messagingSenderId: "21223514589",
+            appId: "1:21223514589:web:bbf9b9ed99be4d5eb11634",
+            measurementId: "G-JY2C15Q1HM"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchAndDisplayUsers() {
+            const loadingIndicator = document.getElementById('loading');
+            const userTableBody = document.getElementById('user-table-body');
+            loadingIndicator.style.display = 'block';
+
+            try {
+                const userCollection = collection(db, "User");
+                const userSnapshot = await getDocs(userCollection);
+                loadingIndicator.style.display = 'none';
+
+                // Clear the table before adding rows
+                userTableBody.innerHTML = "";
+
+                if (userSnapshot.empty) {
+                    userTableBody.innerHTML = "<tr><td colspan='8'>No users found</td></tr>";
+                    return;
+                }
+
+                userSnapshot.docs.forEach(doc => {
+                    const userData = doc.data();
+                    const row = `
+                        <tr>
+                            <td>${userData.firstName || "N/A"}</td>
+                            <td>${userData.lastName || "N/A"}</td>
+                            <td>${userData.middleName || "N/A"}</td>
+                            <td>${userData.age || "N/A"}</td>
+                            <td>${userData.phoneNumber || "N/A"}</td>
+                            <td>${userData.address || "N/A"}</td>
+                            <td>${userData.email || "N/A"}</td>
+                            <td>
+                                <a href="vEdit.html?id=${encodeURIComponent(doc.id)}">Edit</a>
+                                <a href="vDelete.html?id=${encodeURIComponent(doc.id)}">Delete</a>
+                            </td>
+                        </tr>
+                    `;
+                    userTableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                loadingIndicator.style.display = 'none';
+                userTableBody.innerHTML = "<tr><td colspan='8'><div class='error-message'>Error loading data</div></td></tr>";
+            }
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function (e) {
+            const filter = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#user-table-body tr');
+            rows.forEach(row => {
+                const textContent = row.textContent.toLowerCase();
+                row.style.display = textContent.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // Fetch and display users on page load
+        window.addEventListener('DOMContentLoaded', fetchAndDisplayUsers);
+    </script>
+</body>
+</html>
